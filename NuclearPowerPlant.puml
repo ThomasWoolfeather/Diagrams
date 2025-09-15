@@ -1,0 +1,132 @@
+@startuml
+title Nuclear Fuel Production & Power Chain (Satisfactory)
+
+' Define processes
+rectangle "Blender\n(Encased Uranium Cells)\n80% Clock" as Blender
+rectangle "Manufacturer\n(Uranium Fuel Rods)" as Manufacturer
+rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP1
+rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP2
+
+rectangle "Packager\n8 /min" as Packager
+rectangle "Canister Constructor\n(Plastic Canisters)" as CanisterConstructor
+
+' ==== Total Inputs ====
+rectangle "Uranium\n240 /min" as TotalUranium
+rectangle "Concrete\n72 /min" as TotalConcrete
+rectangle "Sulfuric\n192 /min" as TotalSulfuric
+
+' ==== Constructor Inputs =====
+rectangle "Plastic\n30 /min" as Plastic
+Plastic --> CanisterConstructor
+
+' ==== Constructor Outputs ====
+rectangle "Plastic Canisters\n60 /min" as Canisters
+CanisterConstructor --> Canisters
+
+' ==== Blender Inputs ====
+rectangle "Uranium\n40 /min" as Uranium
+rectangle "Concrete\n12 /min" as Concrete
+rectangle "Sulfuric Acid\n32 m³/min" as AcidIn
+
+TotalUranium --> Uranium : x6
+TotalConcrete --> Concrete : x6
+TotalSulfuric --> AcidIn : x6
+
+Uranium --> Blender
+Concrete --> Blender
+AcidIn --> Blender
+
+' ==== Blender Outputs ====
+
+rectangle "Encased Uranium Cells\n20 /min" as EUC
+rectangle "Sulfuric Acid (Return)\n8 m³/min" as AcidOut #GreenYellow
+
+Blender --> EUC
+Blender --> AcidOut
+
+AcidOut --> Packager
+Canisters --> Packager
+
+' ==== Manufacturer Inputs ====
+rectangle "Encased Industrial Beams\n1.2 /min" as Beam
+rectangle "Electromagnetic Control Rods\n2 /min" as EMCR
+
+EUC --> Manufacturer
+Beam --> Manufacturer
+EMCR --> Manufacturer
+
+' ==== Manufacturer Output ====
+rectangle "Uranium Fuel Rods\n0.4 /min" as UFR
+
+Manufacturer --> UFR
+
+' ==== NPP1 Inputs ====
+rectangle "Extractor 1\n120 m³/min" as Extractor1
+rectangle "Extractor 2\n120 m³/min" as Extractor2
+rectangle "Extractor 3\n120 m³/min" as Extractor3
+rectangle "Extractor 4\n120 m³/min" as Extractor4
+
+rectangle "Water1\n240 m³/min" as Water1 #LightBlue
+rectangle "Water2\n240 m³/min" as Water2 #LightBlue
+
+Water1 <- Extractor1
+Extractor2 -> Water1
+Water2 <- Extractor3
+Extractor4 -> Water2
+
+UFR --> NPP1
+UFR --> NPP2
+Water1 --> NPP1
+Water2 --> NPP2
+
+' ==== NPP1 Outputs ====
+rectangle "Uranium Waste\n10 /min" as UWaste1 #LightGreen
+rectangle "Uranium Waste\n10 /min" as UWaste2 #LightGreen
+
+NPP1 --> UWaste1
+NPP2 --> UWaste2
+
+' Notes for clarity
+note left of Blender
+  Takes in:
+  - 40 Uranium /min
+  - 12 Concrete /min
+  - 32 m³ Sulfuric Acid /min
+  Produces:
+  - 20 Encased Uranium Cells /min
+  - 8 m³ Sulfuric Acid (recycled)
+end note
+
+note right of Manufacturer
+  Takes in:
+  - 20 Encased Uranium Cells /min
+  - 1.2 Encased Industrial Beams /min
+  - 2 Electromagnetic Control Rods /min
+  Produces:
+  - 0.4 Uranium Fuel Rods /min
+end note
+
+note right of NPP1
+  Takes in:
+  - 0.2 Uranium Fuel Rods /min
+  - 240 m³ Water1 /min
+  Produces:
+  - Nuclear Power (MW depends on rod usage)
+  - Uranium Waste (10 /min)
+end note
+
+note right of Packager
+  Takes in:
+  - 1 m³ Sulfuric Acid (recycled)
+  Produces:
+  - 1 Packaged Sulfuric Acid
+
+  Note; limit 60 m³ /min input
+  Supports; 7½ Blenders at 80% clock
+end note
+
+skinparam rectangle {
+  BackgroundColor<<process>> LightYellow
+  BorderColor Black
+}
+@enduml

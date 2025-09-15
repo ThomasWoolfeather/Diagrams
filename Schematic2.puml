@@ -1,0 +1,195 @@
+@startuml
+
+rectangle "Uranium\n240 ore/min" as UraniumImport1 #LightGreen
+rectangle "Concrete\n72 units/min" as ConcreteImport1 #LightGreen
+rectangle "Sulfuric Acid\n192 m³/min" as SulfuricAcidImport1 #LightGreen
+
+frame "Blenders (Encased Uranium Cells)" as Blenders1 {
+    rectangle "Blender\n(Encased Uranium Cells)\n80% Clock" as BLD1
+    rectangle "Blender\n(Encased Uranium Cells)\n80% Clock" as BLD2
+    rectangle "Blender\n(Encased Uranium Cells)\n80% Clock" as BLD3
+    rectangle "Blender\n(Encased Uranium Cells)\n80% Clock" as BLD4
+    rectangle "Blender\n(Encased Uranium Cells)\n80% Clock" as BLD5
+    rectangle "Blender\n(Encased Uranium Cells)\n80% Clock" as BLD6
+}
+
+UraniumImport1 --> Blenders1
+ConcreteImport1 --> Blenders1
+SulfuricAcidImport1 --> Blenders1
+
+frame "Blender Outputs" as BlenderOutputs1 #LightBlue {
+    rectangle "Encased Uranium Cells\n120 units/min" as EUC
+    rectangle "Sulfuric Acid (Return)\n48 m³/min" as AcidOut
+}
+
+Blenders1 --> BlenderOutputs1
+
+rectangle "Plastic Canisters\n48 units/min" as Canisters1 #LightGreen
+
+frame "Packagers" as Packagers1 {
+    rectangle "Packager\n48 /min" as PKGA1
+}
+
+Canisters1 --> Packagers1
+
+BlenderOutputs1 --> Packagers1 : 48 Sulfuric Acid /min
+
+rectangle "Packaged Sulfuric Acid\n48 /min" as PackagedAcid #LightBlue
+Packagers1 --> PackagedAcid
+
+
+rectangle "Encased Industrial Beams\n7.2 units/min" as EIB1 #LightGreen
+rectangle "Electromagnetic Control Rods\n12 units/min" as EMCR1 #LightGreen
+
+frame "Manufactorers (Uranium Fuel Rods)" as Manufactorers1 {
+    rectangle "Manufacturer\n(Uranium Fuel Rods)" as MFR1
+    rectangle "Manufacturer\n(Uranium Fuel Rods)" as MFR2
+    rectangle "Manufacturer\n(Uranium Fuel Rods)" as MFR3
+    rectangle "Manufacturer\n(Uranium Fuel Rods)" as MFR4
+    rectangle "Manufacturer\n(Uranium Fuel Rods)" as MFR5
+    rectangle "Manufacturer\n(Uranium Fuel Rods)" as MFR6
+}
+
+EIB1 --> Manufactorers1
+EMCR1 --> Manufactorers1
+
+BlenderOutputs1 --> Manufactorers1 : 120 Encased Uranium Cells /min
+
+frame "Manufacturer Outputs" as ManufacturerOutputs1 #LightBlue{
+    rectangle "Uranium Fuel Rods\n2.4 units/min" as UFR
+}
+
+Manufactorers1 --> ManufacturerOutputs1
+
+rectangle "Water\n2880 m³/min" as WaterImport1 #LightGreen
+
+frame "Nuclear Power Plants" as NPPs {
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP1
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP2
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP3
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP4
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP5
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP6
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP7
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP8
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP9
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP10
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP11
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPP12
+}
+
+WaterImport1 -> NPPs
+
+ManufacturerOutputs1 --> NPPs
+
+frame "Nuclear Power Plants Output" as NPPOutputs #LightBlue{
+    rectangle "Uranium Waste\n120 units/min" as NPPWaste
+}
+
+NPPs --> NPPOutputs
+
+frame "Unpackagers" as Unpackagers1 {
+    rectangle "Packager\n48 units/min" as UPKG1
+}
+rectangle "Packaged Sulfuric Acid\n12 /min" as PackagedAcidRest #LightGray
+
+Unpackagers1 ..> PackagedAcidRest
+
+PackagedAcid --> Unpackagers1
+
+rectangle "Silica\n60 units/min" as SilicaImport2 #LightGreen
+rectangle "Nitric Acid\n36 m³/min" as NitricAcidImport2 #LightGreen
+
+frame "Blenders" as Blenders2 {
+    rectangle "Blender\n(Non-Fissile Uranium)\n120% Clock" as BLDA1
+    rectangle "Blender\n(Non-Fissile Uranium)\n120% Clock" as BLDA2
+}
+
+SilicaImport2 --> Blenders2
+NitricAcidImport2 --> Blenders2
+Unpackagers1 --> Blenders2 : 36 Sulfuric Acid /min
+
+frame "Particle Accelerator" as PA {
+    rectangle "Particle Accelerator\n(Consumes Waste)\n120% Clock" as PA1
+}
+
+NPPOutputs --> Blenders2: 90 Uranium Waste /min
+NPPOutputs --> PA: 30 Uranium Waste /min
+
+frame BlenderOutputs2 #LightBlue {
+    rectangle "Non-Fissile Uranium\n120 units/min"
+    rectangle "Water\n36 m³/min"
+}
+
+frame "Packagers" as Packagers2 {
+    rectangle "Packager\n36 /min" as PKGB1
+}
+
+Unpackagers1 --> Packagers2 : 36 Plastic Canisters units/min
+BlenderOutputs2 --> Packagers2 : 36 Water m³/min
+
+rectangle "Packaged Water\n36 /min" as PackagedWater #LightGray
+Packagers2 --> PackagedWater
+
+Blenders2 --> BlenderOutputs2
+BlenderOutputs2 --> PA : 120 Non-Fissile Uranium /min
+
+frame "Particle Accelerator Output" as PAOutput #LightBlue {
+    rectangle "Plutonium Pellets\n36 units/min"
+}
+
+PA --> PAOutput
+
+rectangle "Concrete\v72 units/min" as ConcreteInput3 #LightGreen
+
+frame "Assemblers (Encased Plutonium Cells)" as Assemblers2 {
+    rectangle "Assembler\n(Encased Plutonium Cells)\n90% Clock" as ASR1
+    rectangle "Assembler\n(Encased Plutonium Cells)\n90% Clock" as ASR2
+    rectangle "Assembler\n(Encased Plutonium Cells)\n90% Clock" as ASR3
+    rectangle "Assembler\n(Encased Plutonium Cells)\n90% Clock" as ASR4
+}
+
+ConcreteInput3 -> Assemblers2
+
+PAOutput --> Assemblers2
+
+frame "Assembler Outputs" as AssemblerOutputs2 #LightBlue {
+    rectangle "Encased Plutonium Cells\n18 units/min"
+}
+
+Assemblers2 --> AssemblerOutputs2
+
+rectangle "Steal beams\n10.8 units/min" as SB5 #LightGreen
+rectangle "Electromagnetic Control Rods\n3.6 units/min" as ECR5 #LightGreen
+rectangle "Heatsinks\n6 units/min" as Heatsinks5 #LightGreen
+
+frame "Manufactorers (Plutonium Fuel Rods)" as Manufactorers2 {
+    rectangle "Manufacturer\n(Plutonium Fuel Rods)\n80% Clock" as MFRA1
+    rectangle "Manufacturer\n(Plutonium Fuel Rods)\n80% Clock" as MFRA2
+    rectangle "Manufacturer\n(Plutonium Fuel Rods)\n80% Clock" as MFRA3
+}
+
+SB5 --> Manufactorers2
+ECR5 --> Manufactorers2
+Heatsinks5 --> Manufactorers2
+
+AssemblerOutputs2 --> Manufactorers2
+
+frame "Manufacturer Outputs" as ManufacturerOutputs2 #LightBlue{
+    rectangle "Plutonium Fuel Rods\n0.6 units/min" as PFR
+}
+
+Manufactorers2 --> ManufacturerOutputs2
+
+frame "Nuclear Power Plants" as NPPs2 {
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPPA1
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPPA2
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPPA3
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPPA4
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPPA5
+    rectangle "Nuclear Power Plant\n(Consumes Fuel Rods)" as NPPA6
+}
+
+ManufacturerOutputs2 --> NPPs2
+
+@enduml
